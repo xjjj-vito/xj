@@ -17,17 +17,34 @@ app_secret = os.environ["APP_SECRET"]
 user_ids = os.environ["USER_ID"].split(";")
 template_id = os.environ["TEMPLATE_ID"]
 
+
 def get_weather(city):
     url = "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + city
     res = requests.get(url).json()
     weather = res['data']['list'][0]
     return weather['date'], \
+           weather["humidity"], \
+           weather["wind"], \
+           weather["airQuality"], \
            weather['weather'], \
            weather["province"], \
            weather["city"], \
            math.floor(weather['temp']), \
            math.floor(weather['high']), \
            math.floor(weather['low'])
+
+'''
+日期
+湿度
+风向
+空气质量
+天气
+省份
+城市
+当前温度
+最高气温
+最低气温
+'''
 
 
 def get_count():
@@ -56,20 +73,28 @@ def get_random_color():
 client = WeChatClient(app_id, app_secret)
 
 wm = WeChatMessage(client)
-da, wea, pro, ci, temperature, highest, lowest = get_weather(city[0])
-da, s_wea, s_pro, s_ci, s_tem, s_highest, s_lowest = get_weather(city[1])
-# 日期，天气，省份，   城市， 温度，  最高温，     最低温
+
+da, humidity, wind, airQuality, wea, pro, ci, temperature, highest, lowest = get_weather(city[0])
+da, s_humidity, s_wind, s_airQuality, s_wea, s_pro, s_ci, s_temperature, s_highest, s_lowest = get_weather(city[0])
+# 日期，湿度，  风向，  空气质量，   天气，省份， 城市， 温度，       最高温，   最低温
 data = {
     # 学校
+    "s_humidity": {"value": s_humidity, "color": get_random_color()},
+    "s_wind": {"value": s_wind, "color": get_random_color()},
+    "s_airQuality": {"value": s_airQuality, "color": get_random_color()},
     "s_province": {"value": s_pro, "color": get_random_color()},
     "s_city": {"value": s_ci, "color": get_random_color()},
     "s_weather": {"value": s_wea, "color": get_random_color()},
-    "s_temperature": {"value": s_tem, "color": get_random_color()},
+    "s_temperature": {"value": s_temperature, "color": get_random_color()},
     "s_highest": {"value": s_highest, "color": get_random_color()},
     "s_lowest": {"value": s_lowest, "color": get_random_color()},
     # 家乡
+    "humidity": {"value": humidity, "color": get_random_color()},
+    "wind": {"value": wind, "color": get_random_color()},
+    "airQuality": {"value": airQuality, "color": get_random_color()},
     "province": {"value": pro, "color": get_random_color()},
     "city": {"value": ci, "color": get_random_color()},
+    # 原来的代码
     "weather": {"value": wea, "color": get_random_color()},
     "temperature": {"value": temperature, "color": get_random_color()},
     "highest": {"value": highest, "color": get_random_color()},
