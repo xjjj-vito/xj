@@ -8,7 +8,7 @@ import random
 
 today = datetime.now()
 start_date = os.environ['START_DATE']
-city = os.environ['CITY']
+city = os.environ['CITY'].split(";")
 birthday = os.environ['BIRTHDAY']
 
 app_id = os.environ["APP_ID"]
@@ -59,8 +59,8 @@ def get_random_color():
 client = WeChatClient(app_id, app_secret)
 
 wm = WeChatMessage(client)
-da, wea, pro, ci, temperature, highest, lowest = get_weather(city)
-da, s_wea, s_pro, s_ci, s_tem, s_highest, s_lowest = get_weather(school_city)
+da, wea, pro, ci, temperature, highest, lowest = get_weather(city[0])
+da, s_wea, s_pro, s_ci, s_tem, s_highest, s_lowest = get_weather(city[1])
 # 日期，天气，省份，   城市， 温度，  最高温，     最低温
 data = {
     # 学校
